@@ -1,27 +1,43 @@
-// Users
-{
-  type: AUTH_USER,
-  uid,
+const AUTH_USER = 'AUTH_USER'
+const UNAUTH_USER = 'UNAUTH_USER'
+const FETCHING_USER = 'FETCHING_USER'
+const FETCHING_USER_FAILURE = 'FETCHING_USER_FAILURE'
+const FETCHING_USER_SUCCESS = 'FETCHING_USER_SUCCESS'
+
+
+export function authUser (uid) {
+  return {
+    type: AUTH_USER,
+    uid,
+  }
 }
 
-{
-  type: UNAUTH_USER,
+export function unauthUser() {
+  return {
+    type: UNAUTH_USER,
+  }
 }
 
-{
-  type: FETCHING_USER,
+export function fetchingUser () {
+  return {
+    type: FETCHING_USER,
+  }
 }
 
-{
-  type: FETCHING_USER_FAILURE,
-  error: 'Error fetching user',
+export function fetchUserFailure (error) {
+  return {
+    type: FETCHING_USER_FAILURE,
+    error: 'Error fetching user',
+  }
 }
 
-{
-  type: FETCHING_USER_SUCCESS,
-  uid,
-  user,
-  timestamp
+export function fetchingUserSuccess (uid, user, timestamp){
+  return {
+    type: FETCHING_USER_SUCCESS,
+    uid,
+    user,
+    timestamp
+  }
 }
 
 
@@ -55,7 +71,7 @@ const initialState = {
   authedId: ''
 }
 
-function users(state = initialState, action) {
+export default function users(state = initialState, action) {
   switch(action.type) {
     case AUTH_USER :
       return  { 
