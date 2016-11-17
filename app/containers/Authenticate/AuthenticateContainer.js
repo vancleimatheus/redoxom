@@ -4,7 +4,7 @@ import auth from 'helpers/auth'
 
 const AuthenticateContainer = React.createClass({
   handleAuth () {
-    auth.then((user) => {
+    auth().then((user) => {
       console.log(user)
     })
   },
