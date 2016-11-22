@@ -1,3 +1,6 @@
+import auth, { logout, saveUser } from 'helpers/auth'
+import { formatUserInfo } from 'helpers/utils'
+
 const AUTH_USER = 'AUTH_USER'
 const UNAUTH_USER = 'UNAUTH_USER'
 const FETCHING_USER = 'FETCHING_USER'
@@ -18,13 +21,14 @@ export function unauthUser() {
   }
 }
 
-export function fetchingUser () {
+function fetchingUser () {
   return {
     type: FETCHING_USER,
   }
 }
 
-export function fetchUserFailure (error) {
+function fetchingUserFailure (error) {
+  console.log(error)
   return {
     type: FETCHING_USER_FAILURE,
     error: 'Error fetching user',
@@ -37,6 +41,27 @@ export function fetchingUserSuccess (uid, user, timestamp){
     uid,
     user,
     timestamp
+  }
+}
+
+export function fetchAndHandleAuthedUser () {
+  return function (dispatch) {
+    dispatch(fetchingUser())
+    return auth().then(({user, credential}) => {
+      const userData = user.providerData[0]
+      const userInfo = formatUserInfo(userData.displayName, userData.photoURL, user.uid)
+      return dispatch(fetchingUserSuccess(user.uid, userInfo, Date.now()))
+    })
+    .then(({user}) => saveUser(user))
+    .then((user) => dispatch(authUser(user.uid)))
+    .catch((error) => dispatch(fetchingUserFailure(error)))
+  }
+}
+
+export function logoutAndUnauth () {
+  return function(dispatch) {
+    logout ()
+    dispatch(unauthUser)
   }
 }
 
@@ -65,7 +90,7 @@ function user (state = initialUserState, action) {
 }
 
 const initialState = {
-  isFetching: false,
+  isFetching: true,
   error: '',
   isAuthed: false,
   authedId: ''
