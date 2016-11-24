@@ -1,23 +1,29 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import getRoutes from './config/routes'
-import { createStore, applyMiddleware } from 'redux'
-import { Provider } from 'react-redux'
-import users from 'redux/modules/users'
+import getRoutes from 'config/routes'
 import thunk from 'redux-thunk'
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
+import { Provider } from 'react-redux'
 import { checkIfAuthed } from 'helpers/auth'
+import * as reducers from 'redux/modules'
 
-const store = createStore(users, applyMiddleware(thunk))
+const store = createStore(
+  combineReducers(reducers), 
+  compose(
+    applyMiddleware(thunk),
+    window.devToolsExtension ? window.devToolsExtension() : (f) => f
+  )
+)
 
-function checkAuth(nextState, replace){
-  if (store.getState().isFetching === true) {
+function checkAuth (nextState, replace) {
+  if (store.getState().users.isFetching === true) {
     return
   }
+
   const isAuthed = checkIfAuthed(store)
   const nextPathName = nextState.location.pathname
-
-  if(nextPathName === '/' || nextPathName === '/auth') {
-    if(isAuthed === true) {
+  if (nextPathName === '/' || nextPathName === '/auth') {
+    if (isAuthed === true) {
       replace('/feed')
     }
   } else {
@@ -31,5 +37,4 @@ ReactDOM.render(
   <Provider store={store}>
     {getRoutes(checkAuth)}
   </Provider>,
-  document.getElementById('app')
-)
+document.getElementById('app'))

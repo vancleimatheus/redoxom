@@ -1,7 +1,7 @@
-export	function formatUserInfo (name, avatar, uid) {
+export function formatUserInfo (name, avatar, uid) {
   return {
     name,
     avatar,
-    uid
+    uid,
   }
 }

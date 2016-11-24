@@ -1,19 +1,18 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { Logout } from 'components'
 import { logoutAndUnauth } from 'redux/modules/users'
+import { Logout } from 'components'
 
 const LogoutContainer = React.createClass({
   propTypes: {
-    dipatch: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
   },
   componentDidMount () {
     this.props.dispatch(logoutAndUnauth())
   },
-  render() {
+  render () {
     return <Logout />
   },
 })
-
 
 export default connect()(LogoutContainer)
